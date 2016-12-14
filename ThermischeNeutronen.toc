@@ -1,0 +1,27 @@
+\select@language {ngerman}
+\contentsline {section}{\numberline {1}Physikalische Grundlagen}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}Hyperfeinwechselwirkungen}{3}{subsection.1.1}
+\contentsline {subsubsection}{\numberline {1.1.1}Magnetischer Kernspineffekt}{3}{subsubsection.1.1.1}
+\contentsline {subsubsection}{\numberline {1.1.2}Elektrische Kernspineffekte}{3}{subsubsection.1.1.2}
+\contentsline {subsubsection}{\numberline {1.1.3}Isotopeneffekte}{4}{subsubsection.1.1.3}
+\contentsline {subsection}{\numberline {1.2}M\@inpenc@undefined@ {utf8}\GenericError {(inputenc) }{Package inputenc Error: Unicode char ßb (U+81)\MessageBreak not set up for use with LaTeX}{See the inputenc package documentation for explanation.}{Your command was ignored.\MessageBreak Type I <command> <return> to replace it with another command,\MessageBreak or <return> to continue without it.}auereffekt}{4}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}Dopplereffekt}{4}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}Radioaktiver Zerfall}{5}{subsection.1.4}
+\contentsline {section}{\numberline {2}Durchf\@inpenc@undefined@ {utf8}hrung}{5}{section.2}
+\contentsline {subsection}{\numberline {2.1}Kalibrierung}{6}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Eisenfolie}{6}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Ferrocen}{6}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Auswirkungen eines Magnetfeldes}{7}{subsection.2.4}
+\contentsline {section}{\numberline {3}Analyse}{7}{section.3}
+\contentsline {subsection}{\numberline {3.1}Kalibrierung}{7}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}M\@inpenc@undefined@ {utf8}\GenericError {(inputenc) }{Package inputenc Error: Unicode char ßb (U+81)\MessageBreak not set up for use with LaTeX}{See the inputenc package documentation for explanation.}{Your command was ignored.\MessageBreak Type I <command> <return> to replace it with another command,\MessageBreak or <return> to continue without it.}auerspektrum von \textsuperscript {57}Fe}{8}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Anpassungen des Modells f\@inpenc@undefined@ {utf8}r Eisen}{8}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}Grundmodell}{8}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}Anpassung auf ein rein magnetisches Feld}{9}{subsubsection.3.3.2}
+\contentsline {subsubsection}{\numberline {3.3.3}Einfluss der Probendicke}{9}{subsubsection.3.3.3}
+\contentsline {subsubsection}{\numberline {3.3.4}Ausrichtung des Magnetfelds der Atome}{9}{subsubsection.3.3.4}
+\contentsline {subsubsection}{\numberline {3.3.5}Variation des Magnetfeldes}{10}{subsubsection.3.3.5}
+\contentsline {subsection}{\numberline {3.4}Beschreibung und Erkl\GenericError {(inputenc) }{Package inputenc Error: Unicode char äru (U+EB)\MessageBreak not set up for use with LaTeX}{See the inputenc package documentation for explanation.}{Your command was ignored.\MessageBreak Type I <command> <return> to replace it with another command,\MessageBreak or <return> to continue without it.}ng der Beobachtungen f\@inpenc@undefined@ {utf8}r Eisen}{10}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.5}Anpassungen des Modells f\@inpenc@undefined@ {utf8}r Ferrocen}{12}{subsection.3.5}
+\contentsline {section}{\numberline {4}Fazit}{13}{section.4}
+\contentsline {section}{\nonumberline Literatur}{13}{section*.13}

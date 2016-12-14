@@ -1,0 +1,257 @@
+\documentclass[german, % Standardmäßig deutsche Eigenarten, englisch -> english
+parskip=full, % Absätze durch Leerzeile trennen
+bibliography=totoc, % Literatur im Inhaltsverzeichnis
+%draft, % TODO: Entwurfsmodus -> entfernen für endgültige Version
+]{scrartcl}
+\usepackage{ifluatex} % zum Testen, ob LuaTeX verwendet wird
+\ifluatex
+\usepackage{fontspec} % Laden von Schriften
+\setmainfont[Mapping=tex-text]{Linux Libertine O}  % Mapping ermöglicht die Verwendung z.B. von --
+\setsansfont[Mapping=tex-text]{Linux Biolinum O}
+\usepackage{polyglossia}  % Sprachpaket
+\setdefaultlanguage[spelling=new,babelshorthands=true]{german}  % Neue Rechtschreibung und Abkürzungen
+\else % kein LuaTeX
+\usepackage[utf8]{inputenc} % Kodierung der Datei
+\usepackage[T1]{fontenc} % Vollen Umfang der Schriftzeichen
+\usepackage{lmodern}
+\usepackage[ngerman]{babel} % Sprache auf Deutsch (neue Rechtschreibung)
+%\usepackage{libertine} % Schriftart Linux Libertine/Biolinum verwenden
+\fi
+
+% Mathematik und Größen
+\usepackage{amsmath}
+\ifluatex
+\usepackage{unicode-math}
+\fi
+\usepackage[locale=DE, % deutsche Eigenarten, englisch -> US
+separate-uncertainty, % Unsicherheiten seperat
+]{siunitx}
+\usepackage{physics} % Erstellung von Gleichungen vereinfachen
+
+% Bilder einbinden
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+%\graphicspath{{bilder/}} % TODO: Pfad unter dem die Bilder gesucht werden
+
+% Gestaltung
+\usepackage{microtype}  % Mikrotypographie
+\usepackage{booktabs}  %schönere Tabellen
+\usepackage{multirow}
+%\usepackage[toc]{multitoc}  %mehrspaltiges Inhaltsverzeichnis
+\usepackage{csquotes} % Anführungszeichen mit \enquote
+\usepackage{subcaption}  % Unterabbildungen a,b,c,…
+\usepackage{enumitem}  % Listen anpassen
+\setlist{itemsep=-10pt}
+\usepackage{scrpage2}  % Manipulation des Seitenstils
+% Kopf-/Fußzeilen
+\pagestyle{scrheadings}
+\clearscrheadings
+\automark{section}
+\ofoot{\pagemark}
+\ihead{\headmark}
+\setheadsepline{.5pt}
+
+\usepackage[colorlinks=true]{hyperref}  % Links und weitere PDF-Features
+
+\makeatletter 
+\renewcommand\subsection{\@startsection 
+   {subsection}{2}{0mm}%      % name, ebene, einzug 
+   {0.5\baselineskip}%            % vor-abstand 
+   {0.3\baselineskip}%            % nach-abstand 
+   {\bfseries\sffamily\large}%           % layout 
+   } 
+\makeatother 
+
+% TODO: Titel und Autor, … festlegen
+\newcommand*{\titel}{Wechselwirkungsquerschnitt thermischer Neutronen}
+\newcommand*{\autor}{Maximilian Obst, Thomas Adlmaier}
+\newcommand*{\abk}{TR}
+\newcommand*{\betreuer}{M.Sc. Nico Madysa}
+\newcommand*{\messung}{02.12.2016}
+\newcommand*{\ort}{Technische Universität Dresden, IKTP}
+
+\hypersetup{pdfauthor={\autor}, pdftitle={\titel}} % PDF-Metadaten
+
+\titlehead{F-Praktikum \abk \hfill TU Dresden}
+\subject{Versuchsprotokoll}
+\title{\titel}
+\author{\autor}
+\date{\begin{tabular}{ll}
+Protokoll: & \today\\
+Messung: & \messung\\
+Ort: & \ort\\
+Betreuer: & \betreuer\end{tabular}}
+
+%----------------
+\begin{document}
+\begin{titlepage}
+\maketitle
+\end{titlepage}
+
+\tableofcontents
+\pagebreak
+
+%------------------------
+\section{Physikalische Grundlagen}
+
+In diesem Versuch geht es darum, den Wirkungsquerschnitt verschiedener Materialien in Bezug auf thermische Neutronen zu bestimmen. Verwendet wird dazu eine Am-Be-Neutronenquelle und ein \textsuperscript{3}He- sowie ein BF\textsubscript{3}-Detektor.
+
+\subsection{Neutronenquelle}
+
+Anders als für Alpha-, Beta- oder Gammateilchen gibt es keine einfachen Quellen für Neutronen. Diese müssen daher über komplexere Zerfallsreihen gewonnen werden. In diesem Versuch wird dafür eine Americium-Beryllium-Quelle mit Bleiabschirmung verwendet:
+\begin{align}
+{}^241_95Am \to {}^237_93Np + {}^4_2He + \SI{5637}{\kilo\electronvolt} \\
+{}^4_2He + {}^9_4Be \to {}^1_0n + \gamma	
+\end{align}
+Die erzeugten Neutronen haben eine Energie von 2 bis \SI{11}{\mega\electronvolt}. Die Bleiabschirmung erfüllt zwei Zwecke: Erstens werden in ihr die schnellen Neutronen über eine (n,2n)-Reaktion in zwei Neutronen umgewandelt, deren Energie bei etwa 6 bis \SI{8}{\mega\electronvolt} liegt. Diese Neutronen können dann jedoch durch ihre zu niedrige Energie nicht mehr mit dem Blei interagieren und gelangen durch die Abschirmung zum Detektor. Und zweitens dient sie als Abschirmung gegenüber den hoch- und niederenergetischen Photonen, die ebenfalls abgestrahlt werden.
+
+\subsection{Thermische Neutronen}
+
+Neutronen werden je nach Energie in vier unterschiedliche Kategorien eingeteilt:
+\begin{itemize}
+\item	\textbf{Schnelle Neutronen:} Diese haben eine Energie über \SI{1}{\mega\electronvolt}. Sie werden in Kernreaktionen erzeugt und gewinnen ihre Energie aus der frei werdenden Kernbindungsenergie, die zwischen 7 und \SI{8}{\mega\electronvolt} beträgt.
+\item	\textbf{Epithermische Neutronen:} Dies sind Neutronen intermediärer Energien zwischen 0,4 und \SI{1}{\mega\electronvolt}. Sie entstehen, wenn schnelle Neutronen ihre Energie über Streuung verlieren, also moderiert werden.
+\item	\textbf{Thermische Neutronen:} Wenn die Neutronen weiter moderiert werden, entstehen thermische Neutronen. Diese haben eine Energie, die mit der Umgebungsenergie im Gleichgewicht steht. Sie lässt sich über die Boltzmann-Formel berechnen:
+\begin{align}
+	E = kbT	
+\end{align}
+Für Raumtemperatur, also etwa \SI{300}{\kelvin} beträgt sie \SI{25}{\milli\electronvolt}.
+\item \textbf{Kalte Neutronen:} Ist die Umgebung stark abgekühlt (etwa \SI{23}{\kelvin}), bezeichnet man thermische Neutronen auch als kalte Neutronen. Diese besitzen eine Energie von etwa \SI{2}{\milli\electronvolt}. Bei weiterer Abkühlung existieren auch die Begriffe sehr kalte (0,3 bis \SI{50}{\micro\electronvolt}, also etwa 0,003 bis \SI{0.6}{\kelvin}) und ultrakalte Neutronen (unter \SI{300}{\nano\electronvolt}).
+\end{itemize}
+Die meisten Materialien interagieren vor allem mit thermischen Neutronen, in diesem Energiebereich ist also der Wirkungsquerschnitt am größten. Dies wird vor allem für Kernspaltungen genutzt. Blei reagiert jedoch vor allem mit schnellen Neutronen, während es mit thermischen nahezu gar nicht reagiert. Dies wird sich im Versuch zu nutze gemacht, um die schnellen Neutronen zu moderieren und im Anschluss die thermischen zu messen.
+
+\subsection{Detektion von Neutronen}
+
+Neutronen können mittels zweier Methoden gemessen werden:
+\begin{itemize}
+\item	Szintillatoren: Bei Streuung von Neutronen mit Atomen können diese ionisiert werden, die herausgeschlagenen Elektronen können gemessen werden. Dies funktioniert vor allem mit leichten Atomen wie Wasserstoff und Helium. Die Schwierigkeit dieser Methode ist, dass bei dem Stoß nicht die gesamte Energie des Neutrons übertragen wird und somit nicht bestimmt werden kann.
+\item	Gaszählrohre: Mittels Gaszählrohren können Produkte von Kernreaktionen des Neutrons mit anderen Atomen gemessen werden. Dies funktioniert, da die Zerfallsprodukte das Gas im Zählrohr ionisieren. Die entstehenden freien Elektronen sowie die Ionen können gemessen werden. Hier liegt die Schwierigkeit darin, dass das Energiespektrum der Reaktionsprodukte und nicht der Neutronen gemessen wird.
+\end{itemize}
+Für beide Messmethoden sind also Aussagen über die Neutronenquelle nötig. Im Versuch wird mit einem \textsuperscript{3}He- sowie einem BF\textsubscript{3}-Detektor gearbeitet, die beide den Gaszählrohren zuzuordnen sind.
+
+\subsection{Zählrohrcharakteristik}
+
+Gaszählrohre arbeiten mit einem dünnen Draht als Anode, die Detektorwand dient als Kathode. Damit existiert im Detektor in elektrisches Feld, welches am Draht am höchsten und an der Wand am schwächsten ist. Gefüllt ist der Detektor mit einem speziellen, für die Messung geeigneten Gas, in diesem Experiment \textsuperscript{3}He und BF\textsubscript{3}. Für eine Messung mit Gaszählrohren ist es nötig zu wissen, dass diese in unterschiedlichen Spannungs-Bereichen unterschiedlich messen. Es werden vier Bereiche unterschieden:
+\begin{enumerate}
+\item \textbf{Rekombinationsbereich: }Ab diesem Spannungsbereich "`saugt"' die Anode alle durch Ionisation entstandenen Elektronen ab. Die Elektronen bekommen aber noch nicht eine Energie, die für weitere Ionisationen ausreichend wäre. In diesem Bereich ist die gemessene Energie proportional zur Energie der Zerfallsprodukte, daher kann mit einer Messung in diesem Bereich auf die Zerfallsprodukte geschlossen werden
+\item \textbf{Proportionalbereich: }Hier bekommen die Elektronen durch das elektrische Feld genug Energie, um weitere Gasatome oder -moleküle zu ionisieren. Dies führt zu einem Kaskadeneffekt, in dem die entstehenden Elektronen zu weiteren Ionisationen führen, was zu einer Signalverstärkung führt. Das Feld ist aber noch nicht stark genug, um die Elektronen so zu beschleunigen, dass alle Atome und Moleküle ionisiert werden. Auch in diesem Bereich ist die gemessene Energie proportional zu der Energie der Zerfallsprodukte, allerdings ist das Signal im Vergleich zum Rekombinationsbereich verstärkt, typischerweise um 10\textsuperscript{3} bis 10\textsuperscript{5}, und kann viel besser gemessen werden. Da das Feld an der Anode am höchsten ist, entsteht der Kaskadeneffekt nur in ihrer direkten Nähe (etwa 10 bis \SI{20}{\micro\meter}). Die Ionen tragen kaum zur Messung bei, da sie viel schwerer sind als die Elektronen und das Feld an der Kathode viel geringer ist. Messungen, in denen das Spektrum und die Energie von Zerfallsprodukten bestimmt werden soll, wie in diesem Versuch, werden in diesem Spannungsbereich durchgeführt
+\item \textbf{Plateaubereich: }In diesem Bereich liefert das elektrische Feld genug Energie, um zu einem Kaskadeneffekt zu führen, indem alle Moleküle und Atome des Gases ionisiert werden. Damit wird das Signal sehr stark und äußerst gut messbar, allerdings geht die Proportionalität zu der Energie der Zerfallsprodukte verloren. Wegen diesen Eigenschaften wird dieser Spannungsbereich für Geiger-Müller-Zähler verwendet, die anzeigen sollen, ob und wenn ja wie viel Strahlung vorhanden ist
+\item \textbf{Dauerentladung: }Bei sehr hohen Spannungen wird keine Energie von außerhalb des Zählers mehr benötigt, um die Gasatome und -moleküle zu ionisieren.
+\end{enumerate} 
+Es findet andauert Ionisation statt und es kann keine Rückschlüsse mehr auf die Umgebung gezogen werden.
+
+\subsection{Neutronendetektoren}
+
+\subsubsection{Beeinflussung von Messungen}
+
+Gaszählrohre werden durch das enthaltene Gas, den Gasdruck und das Material der Detektorwand charakterisiert. Dabei haben unterschiedliche Gase unterschiedliche Eigenschaften: Schwere Gase wie Argon verringern die Reichweite der Zerfallsprodukte, sodass häufiger die gesamte Energie im Zählrohr abgegeben wird, wodurch der Vollenergiepeak deutlicher wird. Mehratomige Gase können durch ihre höhere Zahl von Freiheitsgraden mehr Energie aufnehmen und somit Kaskaden dämpfen, was ebenfalls die Sichtbarkeit des Vollenergiepeaks erhöht. Hohe Drücke führen ebenfalls zu geringeren Reichweiten der Zerfallsprodukte. Da Gaszählrohre die Zerfallsprodukte messen, die durch Kernreaktionen mit Neutronen entstehen, sind sie aber auch für schon vorhandene Zerfallsprodukte empfindlich. Insbesondere die hochreichweitige Gammastrahlung kann Messungen stark beeinflussen. Daher ist ein Ziel, die Empfindlichkeit für Gammastrahlen zu senken. Gerade hohe Drücke und schwere Gase erhöhen aber die Empfindlichkeit für Gammastrahlung deutlich. Um dennoch gute Ergebnisse zu erzielen, müssen Gammastrahlen abgeschirmt werden, dies geschieht durch Abschirmung der Neutronenquelle mit z.B. Blei und durch die Wahl von Detektorwandmaterialien, die Gammastrahlung gut abschirmen, wie z.B. Aluminium. 
+
+\subsubsection{\textsuperscript{3}He- und BF\textsubscript{3}-Detektoren}
+
+Im Versuch wird ein Zählrohr mit \textsuperscript{3}He- und eines mit BF\textsubscript{3}-Gasfüllung verwendet. Die Zerfallsreihen bei Reaktion mit Neutronen in diesen Zählrohren kann in Formel \ref{for:gase} nachvollzogen werden.
+\begin{align}
+{}^3_2He + {}^1_0n \to {}^3_1H(\SI{191}{\kilo\electronvolt}) + {}^1_1p(\SI{574}{\kilo\electronvolt}) + \gamma(\SI{765}{\kilo\electronvolt}) \\
+{}^{10}_5B + {}^1_0n \to {}^7_3Li* + {}^2_2He + \gamma(\SI{2310}{\kilo\electronvolt}) \\
+{}^7_3Li* \to {}^7_3Li + \gamma(\SI{480}{\kilo\electronvolt}) \label{for:gase}
+\end{align}
+Der höchste Wirkungsquerschnitt wird hierbei mit thermischen Neutronen erzeugt. 
+
+\subsection{Wirkungsquerschnitt}
+
+Der Wirkungsquerschnitt $\sigma$ stellt die Wahrscheinlichkeit einer Kernreaktion dar. Anschaulich beschreibt er die Fläche, die getroffen werden muss, damit die Reaktion stattfindet. Mit der Kenntnis der Transmissionsrate $T$ der Teilchen kann der Wirkungsquerschnitt über Formel \ref{for:wirkung} berechnet werden.
+\begin{align}
+T = \frac{\Phi_x - \Phi_{bkg}}{\Phi_0 - \Phi_{bkg}} \\
+\sigma = \frac{A}{\rho x} \ln(\frac{1}{T}) \label{for:wirkung}
+\end{align}
+Dabei stellt $\Phi_x$ die Anzahl der Ereignisse mit Material, dessen Wirkungsquerschnitt bestimmt wird, $\Phi_0$ die Anzahl der Ereignisse ohne Material, $\Phi_{bkg}$ die Untergrundstrahlung inklusive schneller Neutronen, $A$ die atomare Masse, $x$ die Dicke und $\rho$ die Volumendichte des Materials dar.
+
+\section{Durchführung}
+
+\subsection{Aufnahme der Zählrohrcharakteristik}
+
+Für beide Zählrohre soll die Zählrohrcharakteristik aufgenommen werden. Dafür wird zunächst ein erstes Spektrum aufgenommen und anhand dieses Beispiels die betrachteten Kanalgrenzen festgelegt. Anschließend wird das Verhalten der Zählrohre bei unterschiedlichen Spannungen untersucht: Für das BF\textsubscript{3}-Zählrohr wird dabei die Spannung ausgehend von \SI{1500}{\volt} bis \SI{2500}{\volt} gesteigert. Für das \textsuperscript{3}He-Zählrohr wird der Spannungsbereich zwischen 800 und \SI{1200}{\volt} untersucht. Die Messzeit ist hierbei und für den Rest des Versuchs so zu wählen, dass der Fehler bei Annahme einer Poisson-Verteilung 2,5\,\% nicht übersteigt. Die gemessenen Werte werden in einem sinnvollen Diagramm untersucht.
+
+\subsection{Charakterisierung der Neutronenquelle}
+
+Von jetzt an wird das \textsuperscript{3}He-Zählrohr bei einer Spannung von \SI{1150}{\volt} und das BF\textsubscript{3}-Zählrohr bei einer Spannung, die im Proportionalbereich liegt, betrieben. Für beide Zählrohre werden die gleichen Messungen durchgeführt. 
+
+Zunächst wird der Beitrag des Untergrunds sowie der schnellen Neutronen $\Phi_{bkg}$ gemessen. Dafür wird die Cadmium-Abdeckung vor die Neutronenquelle geschoben. Anschließend wird die Cadmium-Abdeckung entfernt und der Fluss der ungestörten thermischen Neutronen samt Untergrund $\Phi_0$ gemessen. 
+
+\subsection{Bestimmung von Transmissionskoeffizienten}
+
+Jetzt wird die Transmission verschiedener Materialien bestimmt, indem sie in den Strahlengang geschoben und die nun erfolgende Anzahl an Ereignissen $\Phi_x$untersucht wird. Die betrachteten Materialien sind:
+\begin{itemize}
+\item Eisen: Dicke $x$ = \SI{1}{\centi\meter}, Volumendichte $\rho$ = \SI{7.874}{\gram\per\cubic\centi\meter}
+\item Aluminium: Dicke $x$ = \SI{5}{\centi\meter}, Volumendichte $\rho$ = \SI{2.70}{\gram\per\cubic\centi\meter}
+\item Kohlenstoff: Dicke $x$ = \SI{1.59}{\centi\meter}, Masse $m$ = \SI{468}{\gram}, Durchmesser $d$ = \SI{15}{\centi\meter}
+\end{itemize}
+Aus den Transmissionkoeffizienten werden die Wirkungsquerschnitte bestimmt. Anschließend werden für vier Paraphin-Schichten unterschiedlicher Dicke die Transmissionskoeffizienten bestimmt:
+\begin{enumerate}
+\item Flächendichte $\rho$ = \SI{0.094549}{\gram\per\squared\centi\meter}
+\item Flächendichte $\rho$ = \SI{0.18485}{\gram\per\squared\centi\meter}
+\item Flächendichte $\rho$ = \SI{0.36113}{\gram\per\squared\centi\meter}
+\item Flächendichte $\rho$ = \SI{0.52757}{\gram\per\squared\centi\meter}
+\end{enumerate}
+Anhand der gemessenen Koeffizienten wird der Wirkungsquerschnitt von Wasserstoff bestimmt.
+
+\subsection{Bestimmung des Spektrums}
+
+Zuletzt wird das Energiespektrum der gemessenen Signale bei geschlossener Cadmium-Abdeckung über einen Zeitraum von einer Stunde vermessen. Das Spektrum wird bezüglich seiner Erzeuger untersucht. 
+
+\section{Analyse}
+
+\subsection{Aufnahme der Zählrohrcharakteristik}
+
+Nach der ersten Aufnahme des Spektrums wurde die untere Grenze des Gammafensters auf Kanal 20 gesetzt, sodass bei möglichst genauer Erhaltung des zu messenden Spektrums der größtmögliche Anteil der Untergrundstrahlung nicht gemessen wird. Die obere Grenze wurde, da im Untergrund kaum hochenergetische Strahlung vorliegt, die das Messergebnis verfälschen könnte, beim Maximum Kanal 1022 gelassen. Die Verstärkung wurde für alle Messungen auf 50\,\% festgesetzt.
+
+Der Fehler der Poisson-Verteilung berechnet sich über Formel \ref{for:poisson}. Um auf einen Fehler $\Delta N$ kleiner als 2,5\,\% zu kommen, müssen also mindestens 1600 Ereignisse $N$ aufgezeichnet werden. Nach einigen Versuchen mit unterschiedlichen Zeiten wurde die Messzeit daher auf 60 Sekunden gesetzt.
+\begin{align}
+\Delta N = \frac{1}{\sqrt{N}} \label{for:poisson}
+\end{align}
+
+\subsubsection{\textsuperscript{3}He-Zählrohr}
+
+Hier wurde die Messung zwischen 65 und 95\,\% der Maximalspannung durchgeführt, die genauen Zahlen können in Tabelle \ref{tab:Prot1} eingesehen werden. Die Maximalspannung lag bei \SI{1248}{\volt}.
+\begin{table}[ht]
+\centering
+\begin{tabular}[h]{l|c|c}
+Prozent der Maximalspannung [\%] & Gemessene Spannung [V] & Gemessene Ereignisse $N$ \\ \hline
+65 & 812 & 2095 \\ \hline
+67 & 837 & 2075 \\ \hline
+69 & 862 & 2255 \\ \hline
+70 & 875 & 2227 \\ \hline
+71 & 887 & 2336 \\ \hline
+73 & 912 & 2317 \\ \hline
+75 & 937 & 2359 \\ \hline
+77 & 962 & 2408 \\ \hline
+79 & 987 & 2460 \\ \hline
+80 & 1000 & 2358 \\ \hline
+81 & 1012 & 2403 \\ \hline
+83 & 1037 & 2469 \\ \hline
+85 & 1062 & 2407 \\ \hline
+87 & 1087 & 2455 \\ \hline
+89 & 1112 & 2409 \\ \hline
+90 & 1124 & 2496 \\ \hline
+91 & 1136 & 2470 \\ \hline
+93 & 1160 & 2490 \\ \hline
+95 & 1186 & 2526 \\ 
+\end{tabular}
+\caption{Zählrohrcharakteristik des \textsuperscript{3}He-Zählrohrs}
+\label{tab:Prot1}
+\end{table}
+
+
+\section{Diskussion}
+
+\subsection{Fazit}
+
+%------------------------
+
+\begin{thebibliography}{9}
+
+
+
+\end{thebibliography}
+
+\end{document}

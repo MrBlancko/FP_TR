@@ -1,0 +1,447 @@
+\documentclass[german, % Standardmäßig deutsche Eigenarten, englisch -> english
+parskip=full, % Absätze durch Leerzeile trennen
+bibliography=totoc, % Literatur im Inhaltsverzeichnis
+%draft, % TODO: Entwurfsmodus -> entfernen für endgültige Version
+]{scrartcl}
+\usepackage{ifluatex} % zum Testen, ob LuaTeX verwendet wird
+\ifluatex
+\usepackage{fontspec} % Laden von Schriften
+\setmainfont[Mapping=tex-text]{Linux Libertine O}  % Mapping ermöglicht die Verwendung z.B. von --
+\setsansfont[Mapping=tex-text]{Linux Biolinum O}
+\usepackage{polyglossia}  % Sprachpaket
+\setdefaultlanguage[spelling=new,babelshorthands=true]{german}  % Neue Rechtschreibung und Abkürzungen
+\else % kein LuaTeX
+\usepackage[utf8]{inputenc} % Kodierung der Datei
+\usepackage[T1]{fontenc} % Vollen Umfang der Schriftzeichen
+\usepackage{lmodern}
+\usepackage[ngerman]{babel} % Sprache auf Deutsch (neue Rechtschreibung)
+%\usepackage{libertine} % Schriftart Linux Libertine/Biolinum verwenden
+\fi
+
+% Mathematik und Größen
+\usepackage{amsmath}
+\ifluatex
+\usepackage{unicode-math}
+\fi
+\usepackage[locale=DE, % deutsche Eigenarten, englisch -> US
+separate-uncertainty, % Unsicherheiten seperat
+]{siunitx}
+\usepackage{physics} % Erstellung von Gleichungen vereinfachen
+
+% Bilder einbinden
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+%\graphicspath{{bilder/}} % TODO: Pfad unter dem die Bilder gesucht werden
+
+% Gestaltung
+\usepackage{microtype}  % Mikrotypographie
+\usepackage{booktabs}  %schönere Tabellen
+\usepackage{multirow}
+%\usepackage[toc]{multitoc}  %mehrspaltiges Inhaltsverzeichnis
+\usepackage{csquotes} % Anführungszeichen mit \enquote
+\usepackage{subcaption}  % Unterabbildungen a,b,c,…
+\usepackage{enumitem}  % Listen anpassen
+\setlist{itemsep=-10pt}
+\usepackage{scrpage2}  % Manipulation des Seitenstils
+% Kopf-/Fußzeilen
+\pagestyle{scrheadings}
+\clearscrheadings
+\automark{section}
+\ofoot{\pagemark}
+\ihead{\headmark}
+\setheadsepline{.5pt}
+
+\usepackage[colorlinks=true]{hyperref}  % Links und weitere PDF-Features
+
+\makeatletter 
+\renewcommand\subsection{\@startsection 
+   {subsection}{2}{0mm}%      % name, ebene, einzug 
+   {0.5\baselineskip}%            % vor-abstand 
+   {0.3\baselineskip}%            % nach-abstand 
+   {\bfseries\sffamily\large}%           % layout 
+   } 
+\makeatother 
+
+% TODO: Titel und Autor, … festlegen
+\newcommand*{\titel}{Mößbauerspektroskopie}
+\newcommand*{\autor}{Maximilian Obst, Thomas Adlmaier}
+\newcommand*{\abk}{MBS}
+\newcommand*{\betreuer}{Philipp Materne}
+\newcommand*{\messung}{18.11.2016}
+\newcommand*{\ort}{Technische Universität Dresden, Institut für Festkörperphysik}
+
+\hypersetup{pdfauthor={\autor}, pdftitle={\titel}} % PDF-Metadaten
+
+\titlehead{F-Praktikum \abk \hfill TU Dresden}
+\subject{Versuchsprotokoll}
+\title{\titel}
+\author{\autor}
+\date{\begin{tabular}{ll}
+Protokoll: & \today\\
+Messung: & \messung\\
+Ort: & \ort\\
+Betreuer: & \betreuer\end{tabular}}
+
+%----------------
+\begin{document}
+\begin{titlepage}
+\maketitle
+
+\begin{figure}[hb] 
+  \centering
+     \includegraphics[width=0.8\textwidth]{moessbauer}
+  \caption{Aufbau und Funktionsprinzip der Mößbauerspektroskopie an \textsuperscript{57}Fe \cite{skript}}
+  \label{fig:moessbauer}
+\end{figure}
+\end{titlepage}
+
+\tableofcontents
+\pagebreak
+
+%------------------------
+\section{Physikalische Grundlagen}
+
+Die Mößbauerspektroskopie ist ein physikalisches Analyseverfahren, bei dem zerstörungsfrei ein Material auf seine Bestandteile sowie ihre elektrische Interaktion untersucht wird. Das Hauptanwendungsgebiet ist dabei die Unterscheidung zwischen zwei- und dreiwertigem Eisen. \cite{basic}
+Für die Mößbauerspektroskopie werden sowohl der Doppler- als auch der Mößbauer-Effekt genutzt.
+
+\subsection{Hyperfeinwechselwirkungen}
+
+\begin{figure}[ht] 
+  \centering
+     \includegraphics[width=0.8\textwidth]{GraphMoessbauer}
+  \caption{Hyperfeinwechselwirkungen von \textsuperscript{57}Fe \cite{skript}}
+  \label{fig:graphmoessbauer}
+\end{figure}
+
+Die Hyperfeinstruktur ist eine Aufspaltung der Energieniveaus in den Spektrallinien der Atomspektren und damit einer der Effekte, die der Entartung entgegenwirken. Sie ist etwa 2000 mal kleiner als die Feinstruktur und wird durch die Interaktion der Elektronen mit dem Kernspin, die in elektrische und magnetische unterschieden werden können, und den verschiedenen Isotopen eines Atoms bewirkt. \cite{hyperfein}
+
+\subsubsection{Magnetischer Kernspineffekt}
+
+Der magnetische Kernspineffekt führt zur sogenannten Zeeman-Aufspaltung: Dabei wird das Spektrum in $2I+1$ Zustände geteilt. Für \textsuperscript{57}Fe kann das Zeeman-Spektrum in Bild \ref{fig:graphmoessbauer}(a) gesehen werden.  
+\begin{align}
+H_z = -g_I \mu_n I_z B_z \label{for:magKSpin}
+\end{align}
+
+\subsubsection{Elektrische Kernspineffekte}
+
+Die Effekte des elektrischen Kernpotentials lassen sich über folgende Formel verstehen:
+
+\begin{align}
+H_{elektr.} = \int \rho (\vec r) \Phi (\vec r) d^3 \label{for:eleKSpin}
+\end{align}
+Diese Formel kann mit einer Taylorreihe entwickelt werden:
+\begin{align}
+H_{elektr.} \approx Z e \Phi (0) - \frac{Z e < r^2 > \rho_e (0)}{6 \epsilon_0} + \frac{e}{6}\sum_i^3 V_{ii} Q_{ii} \label{for:eleKSpin_f}
+\end{align}
+
+Hierbei beschreibt der erste Teil die normalen Kernzustände, der zweite eine Isomerieverschiebung und der dritte das Quadropolmoment. Die Isomerieverschiebung beschreibt dabei die Energie des Kerns in der Elektronenhülle. Da sie nur von Größen aufgestellt wird (Ladungsdichte der Hülle $\rho_e$ und Kernsradius $<r^2>$, die für das ganze Atom gelten, verschiebt sie alle Übergangsenergien in gleichem Maß, wie in Bild \ref{fig:graphmoessbauer}(c) gesehen werden kann. Da eine Isomerieverschiebung auch in der Strahlungsquelle auftreten kann, muss sie stets auf die Quelle bezogen werden. Das Quadropolmoment schließlich lässt im Sonderfall, dass $V_{xx} = V_{yy}$ darauf schließen, wie groß der Kernspin ist: Bei einem Kernspin von $\frac{1}{2}$ entsteht keine Aufspaltung, bei $\frac{3}{2}$ wird das Spektrum schon in zwei Zustände geteilt - dieser Fall tritt bei \textsuperscript{57}Fe auf und das entstehende Bild kann in Bild \ref{fig:graphmoessbauer}(b) gesehen werden. Dies ist darauf zurückzuführen, dass im genannten Sonderfall das Quadropolmoment nur vom Quadrat der z-Richtung der Hauptquantenzahl $I_z$ abhängig ist.
+
+\subsubsection{Isotopeneffekte}
+
+\begin{itemize}
+\item \textbf{Kernmassen-Effekt} Bei Absorption und Emission von Photonen durch Atome findet eine Auslenkung der Atomkerne von ihrer Ruhelage statt. Dies führt zu einer Schwingung, die die effektive Masse der Elektronen absenkt. Das wiederum führt zu einer Ausspaltung der Energieniveaus, die von der Masse des Atomkerns und somit dem Isotop abhängt. Dieser Effekt wird bei steigender Kernmasse geringer.
+\item \textbf{Kernvolumen-Effekt} Elektronen der s-Schale haben eine große Wahrscheinlichkeit, sich im Atomkern zu befinden. Dies führt zu einer Abweichung des Potentials, was eine Anhebung der Energieniveaus zur Folge hat. Dieser Effekt wird größer, ja größer der Kern wird, die Abweichung bei verschiedenen Isotopen ist aber bei kleinen Kernen größer, da hier die Volumendifferenzen stärker ins Gewicht fallen.
+\end{itemize}
+
+\subsection{Mößbauereffekt}
+
+Wie unter Isotopeneffekte beschrieben, beginnt ein Atomkern zu schwingen, sobald er ein Photon emittiert oder absorbiert. Diese Schwingung ist von der Energie des Photons und der Masse des Atomkerns abhängig. Der Mößbauereffekt jedoch beseitigt diese Effekte nahezu vollständig: Bestimmte Elemente sind in der Lage, den entstehenden Stoß über das gesamte Gitter zu verteilen. Damit ist der Anteil der Masse des Atomkerns um Größenordnungen höher. Der Stoß wird damit nahezu rückstoßfrei.
+
+\subsection{Dopplereffekt}
+
+Der Doppler-Effekt beschreibt die Dehnung oder Stauchung von Wellen, die durch eine Bewegung des Wellen-Aussenders hervorgerufen werden. Beschrieben wird der Effekt häufig über die entstehende Frequenzänderung. Ohne Medium, also für elektromagnetische Wellen, kann diese Änderung mit folgenden Formeln beschrieben werden:
+\begin{align}
+f_{Beobachter;allgemein} = f_{Quelle} \frac{\sqrt{1 - \frac{v^2}{c^2}}}{1 - \frac{v}{c} \cos (\alpha)} \\
+f_{B; longitudinal} = f_{Quelle} \sqrt{\frac{c + v}{c - v}} \\
+f_{B; transversal} = f_{Quelle} \sqrt{1 - \frac{v^2}{c^2}} \label{for:doppler}
+\end{align}
+Dabei beschreibt $\alpha$ den Winkel zwischen Bewegung und der Strecke Beobachter-Quelle.
+
+\subsection{Radioaktiver Zerfall}
+
+Nicht alle Atomkerne sind stabil. Einige können zerfallen. Dieser Zerfall ist je nach Atomkern unterschiedlich, es werden vier Arten unterschieden:
+
+\textbf{Alpha-Strahlung:} Hier werden beim Zerfall des Atomkerns He\textsuperscript{2+}-Kerne freigesetzt. Diese sind sehr schwer und können daher schwere Schäden in ihrer Umgebung anrichten. Allerdings fliegen diese Teilchen nicht sehr weit und können gut abgeschirmt werden.
+\begin{align}
+{}^A_Z\mathrm{X} \to {}^{A-2}_{Z-2}\mathrm{Y} + {}^2_2\mathrm{He} \label{for:alpha}
+\end{align}
+
+\textbf{Beta-Strahlung:} Bei dieser Strahlungsart wandelt sich ein Neutron in ein Proton oder umgekehrt. Die entstehenden Elektronen oder Positronen fliegen weiter als Alpha-Teilchen, haben aber auch eine verringerte schädingende Wirkung.
+\begin{align}
+{}^A_Z\mathrm{X} \to {}^{A}_{Z+1}\mathrm{Y} + e^- + \bar \nu_e \\
+{}^A_Z\mathrm{X} \to {}^{A}_{Z-1}\mathrm{Y} + e^+ + \nu_e \label{for:beta}
+\end{align}
+
+\textbf{Gamma-Strahlung:} Diese Strahlung führt nicht zu einer Veränderung des Atomkerns sondern bringt diesen nur von einem angeregten Zustand zurück in den Grundzustand. Dabei werden hochenergetische Photonen ausgesendet, die nur schwach schädigend wirken, aber eine hohe Reichweite haben und kaum abzuschirmen sind.
+\begin{align}
+{}^A_Z\mathrm{X*} \to {}^{A}_{Z}\mathrm{X} + \gamma \label{for:gamma}
+\end{align}
+
+\section{Durchführung}
+
+Im Versuch wird eine ummantelte \textsuperscript{57}Co-Quelle verwendet, die Gammastrahlung emittiert. Die Energie der emittierten Photonen haben Peaks bei \(\SI{136}{\kilo\electronvolt}\), \(\SI{122}{\kilo\electronvolt}\) und \(\SI{14.4}{\kilo\electronvolt}\). Für die Messung sind Photonen der Energie \(\SI{14.4}{\kilo\electronvolt}\) interessant. Für die Detetktion wird ein Silicium-Detektor verwendet.
+Ziel des Versuchs ist eine Einführung in die Verwendungsmethoden von lokalen Sonden, im speziellen der Mößbauer-Spektroskopie.
+
+\subsection{Kalibrierung}
+
+Um die Messung möglichst genau zu machen, soll das Programm nur Photonen aufzeichnen, die im gewollten Energiespektrum liegen. Dafür muss am Anfang das Gamma-Fenster auf den \(\SI{14.4}{\kilo\electronvolt}\)-Peak gesetzt werden. Um diesen zu bestimmen, wird je eine 5-minütige Messung des Pulshöhenspektrums von der Quelle ohne Probe und mit einer 4x\(\SI{3}{\micro\meter}\)-Eisenfolie aufgenommen. Die Spektren werden übereinandergelegt und aus dem entstehenden Bild der \(\SI{14.4}{\kilo\electronvolt}\)-Peak bestimmt. Anschließend wird das Gammafenster auf diesen Peak gesetzt.
+
+Danach wird das Mößbauer-Spektrum der 4x\(\SI{3}{\micro\meter}\)-Eisenfolie etwa 75 Minuten lang aufgenommen. Dafür wird eine Spannung $U_{Antrieb}$ von etwa \(\SI{195}{\milli\volt}\) an den Antrieb der \textsuperscript{57}Co-Quelle angelegt. Mithilfe des aufgenommenen Spektrums wird der $\alpha$-Faktor zwischen $U_{Antrieb}$ und Geschwindigkeit $v_{Quelle}$ bestimmt. Dafür wird das Programm Moessfit verwendet, welches mit einem ersten abgeschätzen $\alpha$-Faktor einen Fit an das Mößbauer-Spektrum anlegt und einen dafür passenden Wert des Magnetfeldes zwischen den Atomen $B_{fit;Atome}$ angibt. Mit dem Wissen, dass das Magnetfeld zwischen den Atomen $B_{th.;Atome}$ \(\SI{33.3}{\tesla}\) entsprechen soll, wird über die Formel \ref{for:alphafaktor} der korrekte $\alpha$-Faktor bestimmt. Anschließend werden die in Moessfit zur Verfügung stehenden Variablen angepasst, bis das verwendete Modell bestmöglich dem betrachteten Verhalten entspricht. Die Anpassungen werden physikalisch erklärt.
+\begin{align}
+v_{Quelle} = \alpha_{exp} U_{Antrieb} \\
+\alpha_{exp} = \alpha_{Schätzung} \frac{B_{th.;Atome}}{B_{fit;Atome}} \label{for:alphafaktor}
+\end{align}
+
+\subsection{Eisenfolie}
+
+Nun wird das Mößbauer-Spektrum einer \(\SI{25}{\micro\meter}\)-Eisenfolie wieder über etwa 75 Minuten aufgenommen. Im aufgenommenen Bild werden wieder die Variablen angepasst, bis das Modell bestmöglich übereinstimmt. Anschließend wird das betrachtete Spektrum mit dem der 4x\(\SI{3}{\micro\meter}\)-Eisenfolie verglichen und die Abweichungen physikalisch erklärt.
+
+\subsection{Ferrocen}
+
+Der Versuch wird ein weiteres Mal für Ferrocen durchgeführt. Dabei wird eine verringerte Antriebsspannung verwendet, die eine Geschwindigkeit der Quelle von \(\SI{2.5}{\milli\meter\per\second}\) bewirkt. Wieder werden im aufgenommenen Bild die Variablen angepasst und die Anpassungen physikalisch erklärt.
+
+\subsection{Auswirkungen eines Magnetfeldes}
+
+Im letzten Versuchsteil werden an die \(\SI{25}{\micro\meter}\)-Eisenfolie zwei unterschiedliche Magnetfelder angelegt, wieder über etwa 75 Minuten das Mößbauer-Spektrum aufgenommen und in den erhaltenen Bildern die Variablen angepasst, bis das Modell die Werte am Besten wiedergibt. Die Bilder und Variablen werden miteinander und mit den Bildern und Variablen der anderen Eisenfolien-Messungen verglichen und die Ergebnisse physikalisch interpretiert.  
+
+\section{Analyse}
+
+\subsection{Kalibrierung}
+
+\begin{figure}[ht] 
+  \centering
+     \includegraphics[width=0.8\textwidth]{GraphMoessbauer}
+  \caption{Pulshöhenspektren der verwendeten Quelle ohne und mit 4x$3\,\mu m$-Eisenfolie}
+  \label{fig:pulsspektrum}
+\end{figure}
+
+\begin{figure}[hb] 
+  \centering
+     \includegraphics[width=0.8\textwidth]{CoSpektrum}
+  \caption{Gamma-Spektrum einer \textsuperscript{57}Co-Quelle}
+  \label{fig:spektrumco}
+\end{figure}
+
+Zunächst wurde zur Festlegung des Gamma-Fensters das Pulshöhenspektrum der Quelle mit und ohne 4x\(\SI{3}{\micro\meter}\)-Eisenfolie aufgenommen. Das Ergebnis kann in Bild \ref{fig:pulsspektrum} gesehen werden. Für eine bessere Sichtbarkeit der Ergebnisse wurde eine logarithmische Skala bei der Ordinate gewählt. Es können 8 Peaks in drei Gruppen beobachtet werden: Die erste Gruppe umfasst Peaks bei den Kanälen 56, 228 und 361, die zweite bei 1171 und 1349 und die dritte bei 2508, 2803 und 3024. Das Spektrum einer \textsuperscript{57}Co-Quelle umfasst im Normalfall 4 Peaks, wie in Bild \ref{fig:spektrumco} gesehen werden kann. Von diesen können zwei zur ersten Gruppe gerechnet werden: Der \(\SI{7}{\kilo\electronvolt}\)-Peak und der \(\SI{14.4}{\kilo\electronvolt}\)-Peak, die den Peaks in den Kanälen 56 und 228 entsprechen. Diese Zuordnung ist möglich, da diese Peaks eine hohe Verringerung bei Einbringen des Eisens erfahren: Den Photonen niedriger Energie gelingt es seltener, das Eisen zu durchdringen. Die Photonen der Energie \(\SI{14.4}{\kilo\electronvolt}\) werden vom Eisen absorbiert und in alle Raumrichtungen wieder abgestrahlt, was eine Verringerung im betrachteten Raumwinkel bedeutet. Die übrigen zwei Peaks können zur dritten Gruppe gezählt werden: Der größte Peak bei Kanal 2508 entspricht dem Peak bei \(\SI{122}{\kilo\electronvolt}\), der den größten Abstrahlungspeak einer \textsuperscript{57}Co-Quelle entspricht. Der Peak danach bei Kanal 2803 kann dem darauf folgendem Peak bei \(\SI{136}{\kilo\electronvolt}\) zugeordnet werden. Damit ist der gesuchte Peak bei \(\SI{14.4}{\kilo\electronvolt}\) identifiziert. Die übrigen 4 Peaks bei den Kanälen 361, 1171, 1349 und 3024 sowie die Stufen bei den Kanälen 700 und 1745 sind schwieriger zu erklären.
+
+Mit diesem Ergebnis wurde das Gamma-Fenster auf die Kanäle ??? bis ??? gesetzt.
+
+Für die Antriebsspannung $U_{Antrieb}$ wurde der Wert $(190.5 \pm 0.2)$\,mV eingestellt. Zu Beginn wurde ein $\alpha_{Schätzung}$-Wert von 0.02 angenommen. Diese Annahme führt zu einem $B_{fit;Atome}$ von \(\SI{19.07}{\tesla}\). Damit ergibt sich über die Formel \ref{for:alphafaktor} folgender $\alpha$-Faktor:
+\begin{align*}
+\alpha_{exp} = 0.03493034309
+\end{align*} 
+
+\subsection{Mößbauerspektrum von \textsuperscript{57}Fe}
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{Moessfitstandard}
+	  \caption{Standardmäßig verwendete Paramter von Moessfit}
+	  \label{fig:moessfitstandard}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+	  \includegraphics[width=\textwidth]{Winkel}
+	  \caption{Verwendete Winkel im Modell}
+	  \label{fig:winkel}
+  \end{subfigure}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{0.5\textwidth}
+		\includegraphics[width=\textwidth]{MoessbauerEisen4x3}
+	  \caption{Mößbauerspektrum}
+	  \label{fig:moess4x3}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+	  \includegraphics[width=\textwidth]{WerteEisen4x3}
+	  \caption{Gefittete Werte des Spektrums}
+	  \label{fig:werte4x3}
+  \end{subfigure}
+	\caption{Gefittetes Mößbauerspektrum von 4x\(\SI{3}{\micro\meter}\)-Eisenfolien}
+	\label{fig:eisen4x3}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{0.5\textwidth}
+		\includegraphics[width=\textwidth]{MoessbauerEisen25}
+	  \caption{Mößbauerspektrum}
+	  \label{fig:moess25}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+	  \includegraphics[width=\textwidth]{WerteEisen25}
+	  \caption{Gefittete Werte des Spektrums}
+	  \label{fig:werte25}
+  \end{subfigure}
+	\caption{Gefittetes Mößbauerspektrum von einer \(\SI{25}{\micro\meter}\)-Eisenfolie}
+	\label{fig:eisen25}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{0.5\textwidth}
+		\includegraphics[width=\textwidth]{MoessbauerEisen25MagnetGerade}
+	  \caption{Mößbauerspektrum}
+	  \label{fig:moess25gerade}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+	  \includegraphics[width=\textwidth]{WerteEisen25MagnetGerade}
+	  \caption{Gefittete Werte des Spektrums}
+	  \label{fig:werte25gerade}
+  \end{subfigure}
+	\caption{Gefittetes Mößbauerspektrum von einer mit zwei Stabmagneten ausgerichteten \(\SI{25}{\micro\meter}\)-Eisenfolie}
+	\label{fig:magnetgerade}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{0.5\textwidth}
+		\includegraphics[width=\textwidth]{MoessbauerEisen25MagnetRing}
+	  \caption{Mößbauerspektrum}
+	  \label{fig:moess25ring}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+	  \includegraphics[width=\textwidth]{WerteEisen25MagnetRing}
+	  \caption{Gefittete Werte des Spektrums}
+	  \label{fig:werte25ring}
+  \end{subfigure}
+	\caption{Gefittetes Mößbauerspektrum von einer mit zwei Ringmagneten ausgerichteten \(\SI{25}{\micro\meter}\)-Eisenfolie}
+	\label{fig:magnetring}
+\end{figure}
+
+\subsection{Anpassungen des Modells für Eisen}
+
+\subsubsection{Grundmodell}
+
+Für die Auswertung wird das Programm Moessfit verwendet. Eine Ansicht der standardmäßig verwendeten Fitparamter findet sich in Bild \ref{fig:moessfitstandard}. Die Parameter beschreiben folgende Dinge:
+\begin{itemize}
+\item \textit{B:} Betrag des lokalen Magnetfelds
+\item \textit{Vzz:} z-Komponente des lokalen elektrischen Felds
+\item \textit{eta:} (Vxx-Vyy)/Vzz, entspricht der Asymmetrie des E-Feldes
+\item \textit{theta:} Winkel zwischen B-Feld und z-Achse, siehe Bild \ref{fig:winkel}
+\item \textit{phi:} Winkel zwischen B-Feld und x-Achse, siehe Bild \ref{fig:winkel}
+\item \textit{CS:} Isomerieverschiebung in Bezug zur Isomerieverschiebung der Quelle (hier als 0 gesetzt)
+\item \textit{omega:} Breite der Linien/Peaks
+\item \textit{I0:} Basis-Linie der Intensität des Fits
+\item \textit{A0:} Fläche unter dem Fit-Graphen
+\item \textit{beta:} Texturwinkel zwischen einfallenden Photonen und z-Achse, siehe Bild \ref{fig:winkel}
+\item \textit{gamma:} Texturwinkel zwischen einfallenden Photonen und B-Feld, siehe Bild \ref{fig:winkel}
+\end{itemize}
+
+\subsubsection{Anpassung auf ein rein magnetisches Feld}
+
+Um die Bilder \ref{fig:eisen4x3}, \ref{fig:eisen25}, \ref{fig:magnetgerade} und \ref{fig:magnetring} auszuwerten, muss das verwendete Modell und damit die Fitparameter angepasst werden. Dafür ist zunächst die Beobachtung hilfreich, das wir bei allen Diagrammen 6 Peaks sehen. Dabei sind die Peaks in der Größe geordnet: Die größten liegen außen, die kleinsten innen. Diese Peaks entsprechen also sehr gut denen in Bild \ref{fig:graphmoessbauer}(a). Es ist also davon auszugehen, dass für die Auswertung die Einflüsse des elektrischen Feldes weitestgehend ignoriert werden können - damit werden die Parameter \textit{Vzz} und \textit{eta} nicht mehr benötigt. Mit der Definition, dass das betrachtete B-Feld entlang der z-Achse verläuft, können auch \textit{theta} und \textit{phi} auf null gesetzt und in Folge ignoriert werden. Mit diesen Definitionen spielt \textit{gamma} keine Rolle mehr und kann ignoriert werden. Benötigt werden also weiterhin: \textit{B}, \textit{CS}, \textit{omega}, \textit{I0}, \textit{A0} und \textit{beta}. 
+
+\subsubsection{Einfluss der Probendicke}
+
+Nun muss betrachtet werden, was gemessen werden soll: Gesucht werden die Einflüsse der Probendicke und der Ausrichtung der Magnetfelder der Atome im Eisen. Um den Einfluss der Probendicke deutlicher zu machen, liefert Moessfit die Möglichkeit, statt der Fläche \textit{A0} das Transmissionsintegral \textit{ta} auszugeben. Dieses beschreibt direkt den Einfluss der Probendicke: Je größer \textit{ta} wird, desto stärker absorbieren die kleinen Peaks im Diagramm im Vergleich zu den großen. Für weitere Berechnungen schließt das Programm aus \textit{ta} auf \textit{A0}. 
+
+\subsubsection{Ausrichtung des Magnetfelds der Atome}
+
+Um die  Ausrichtung der Magnetfelder der Eisen-Atome deutlich zu machen, wird \textit{beta} transformiert zu \textit{fraglong}, was für den Anteil der Eisen-Atome steht, deren Magnetfeld parallel zum Strahl der Photonen steht. Im Anschluss werden die Atome, die parallel zum Photonenstrahl stehen und die, die senkrecht dazu stehen, getrennt betrachtet: Ihr Anteil an \textit{A0} des Graphen wird getrennt ausgerechnet und anschließend addiert. Damit wird der mittlere Winkel der Atome \textit{beta} nicht mehr gebraucht. 
+
+\subsubsection{Variation des Magnetfeldes}
+
+Dieses Modell beschreibt bereits einen großen Teil der Daten, hat aber noch eine Schwäche: Bei der Betrachtung des Mößbauerspektrums der mit einem äußeren Magnetfeld ausgerichteten Eisen-Atome zeigt sich, dass die mittleren Peaks vom Modell als kleiner berechnet werden, als sie im Bild zu sehen sind. Grund dafür ist die Annahme, dass das Magnetfeld überall konstant ist. Durch das Anlegen eines äußeren Feldes ist diese Annahme jedoch nicht mehr richtig. Daher werden zwei zusätzliche Parameter eingeführt, die eine Beschreibung des realen Magnetfeldes als Normalverteilung erlauben: \textit{B0} und \textit{sigma}. Formel \ref{for:normal} zeigt die Nutzung der Parameter. Für \textit{B0} wird das normale magnetische Feld im Eisen, also \SI{33.3}{\tesla}, gewählt.
+\begin{align}
+B_{Feld} = e^{-\frac{B-B0}{2sigma^2}} \label{for:normal}
+\end{align} 
+Für das verwendete Modell werden also die Parameter \textit{B}, \textit{CS}, \textit{omega}, \textit{I0}, \textit{ta}, \textit{fraglong}, \textit{B0} und \textit{sigma} verwendet. Die Ergebnisse können in den Bildern \ref{fig:eisen4x3}, \ref{fig:eisen25}, \ref{fig:magnetgerade} und \ref{fig:magnetring} gesehen werden.
+
+\subsection{Beschreibung und Erklärung der Beobachtungen für Eisen}
+
+Zunächst werden die Peaks in Moessfit vermessen und mit der Nulllinie \textit{I0} verglichen. Daraus ergeben sich Absorptionsraten für jeden Peak, die in Tabelle \ref{tab:absorption} zu sehen sind.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}[h]{l|c|c|c}
+& Innere Peaks [\%] & Mittlere Peaks [\%] & Äußere Peaks [\%] \\ \hline
+\SI{25}{\micro\meter}-Eisenfolie & 9,99 & 18,65 & 22,17 \\ \hline
+4x\SI{3}{\micro\meter}-Eisenfolie & 5,92 & 14,23 & 14,48 \\ \hline
+\SI{25}{\micro\meter}-Eisenfolie mit Stabmagneten & 7,21 & 18,97 & 15,64 \\ \hline
+\SI{25}{\micro\meter}-Eisenfolie mit Ringmagneten & 10,13 & 21,59 & 22,51
+\end{tabular}
+\caption{Absorption der Peaks in \%}
+\label{tab:absorption}
+\end{table}
+
+Aus der Tabelle sind verschiedene Dinge zu entnehmen:
+\begin{enumerate}
+\item Die \SI{25}{\micro\meter}-Eisenfolie absorbiert stärker als die 4x\SI{3}{\micro\meter}-Eisenfolie
+\item Keine der Folien zeigt das "`normale"' Verhalten, wonach die Linien die Größenverhältnisse 1:2:3 haben sollten. Die \SI{25}{\micro\meter}-Eisenfolie zeigt ein 1:1,87:2,22, die 4x\SI{3}{\micro\meter}-Eisenfolie ein 1:2,40:2,45 Verhalten
+\item Wenn die \SI{25}{\micro\meter}-Eisenfolie mit Stabmagneten geordnet wird, sinken die Absorption des ersten und dritten Peaks um 25\,\%, während die des zweiten Peaks annähernd gleich bleibt
+\item Die Beeinflussung der \SI{25}{\micro\meter}-Eisenfolie durch zwei Ringmagnete führt zu einer höheren Absorption des zweiten Peaks
+\end{enumerate}
+Der erste Punkt lässt sich über \textit{ta} quantifizieren: Während die \SI{25}{\micro\meter}-Eisenfolie einen \textit{ta}-Wert von 7,4422 aufweist, hat die 4x\SI{3}{\micro\meter}-Eisenfolie einen Wert von 4,5057, also etwa 40\,\% weniger. Diese Abweichung stimmt sehr gut mit den ersten Peaks beider Folien überein, die ebenfalls eine Abweichung von etwa 40\,\% zeigen. Beim dritten Peak ist der Unterschied schon größer, hier ist der Peak der 4x\SI{3}{\micro\meter}-Eisenfolie nur etwa 35\,\% kleiner als der der \SI{25}{\micro\meter}-Eisenfolie. Beim zweiten Peak gibt es einen deutlichen Unterschied, der Peak der 4x\SI{3}{\micro\meter}-Eisenfolie ist nur etwa 24\,\% kleiner als der der \SI{25}{\micro\meter}-Eisenfolie. Für diese Abweichungen dürfte es zwei Gründe geben:
+\begin{itemize}
+\item Da die \SI{25}{\micro\meter}-Eisenfolie mehr als dopplet so dick wie die 4x\SI{3}{\micro\meter}-Eisenfolie ist, tritt der Effekt der nicht zu vernachlässigenden Probendicke deutlicher zu Tage. Die \SI{25}{\micro\meter}-Eisenfolie hat eine Flächendichte von \SI{19.7}{\milli\gram\per\square\centi\meter}, die 4x\SI{3}{\micro\meter}-Eisenfolie \SI{9.4}{\milli\gram\per\square\centi\meter} - berechnet wird dies mit dem Wissen, dass Eisen eine Dichte von \SI{7.874}{\gram\per\cubic\centi\meter} hat \cite{eisen}. Daher wird der dritte Peak bei der \SI{25}{\micro\meter}-Eisenfolie stärker niveliert als bei der 4x\SI{3}{\micro\meter}-Eisenfolie
+\item Dadurch, dass die 4x\SI{3}{\micro\meter}-Eisenfolie aus vier sehr dünnen \SI{3}{\micro\meter}-Folien besteht, ist die Ausrichtung der Magnetfelder der Atome nicht mehr zufällig wie in einer optimalen Pulverprobe. Die Wahrscheinlichkeit, dass die Magnetfelder senkrecht zum Photonenstrahl ausgerichtet sind, ist viel höher. Der Vergleich der fraglong-Werte beider Folien bestätigt diese Überlegung: Während die \SI{25}{\micro\meter}-Eisenfolie einen fraglong-Wert von 0,2733 erreicht, hat die 4x\SI{3}{\micro\meter}-Eisenfolie einen Wert von 0,1702. Bei einem optimalen Pulver müssten alle Raumrichtungen gleich stark vertreten sein, also die Ebene senkrecht zum Strahl 0,6667 und die Linie parallel zum Strahl 0,3333 erreichen. Von fraglong = 0,3333 weichen aber beide Folien ab, die 4x\SI{3}{\micro\meter}-Eisenfolie sogar deutlich
+\end{itemize}
+Diese Erkenntnisse erklären auch direkt den zweiten Punkt: Da beide Folien dicker als die vom Modell erlaubten \SI{1}{\milli\gram\per\square\centi\meter} sind, findet eine signifikante Nivelierung der zweiten und dritten Peaks im Vergleich zum ersten statt. Die große Abweichung des zweiten Peaks der 4x\SI{3}{\micro\meter}-Eisenfolie wiederum lässt sich durch die stärkere Ordnung in der Folie im Vergleich zur \SI{25}{\micro\meter}-Eisenfolie erklären. Der zweite Peak wird also offenbar durch eine stärkere Anordnung in die Richtung senkrecht zum Photonenstrahl verstärkt.
+
+Für die Erklärung der massiven Abweichung der Absorption bei der \SI{25}{\micro\meter}-Eisenfolie mit Stabmagneten im Vergleich zur Absorption der \SI{25}{\micro\meter}-Eisenfolie ohne Magnet muss ebenfalls auf die Ordnung der Magnetfelder geschaut werden: Das äußere Magnetfeld führt zu einem \textit{fraglong}-Wert von 0,0634. Dies führt zu dem im Vergleich zu den anderen beiden Peaks so großen zweiten Peak. Da hier aber mit \SI{25}{\micro\meter}-Eisenfolie ohne Magnet eine Vergleichsmessung vorliegt, kann die Vermutung aufgestellt werden, dass die Erhöhung der Ordnung nicht nur zu einer Steigerung der Absorption des zweiten Peaks, sondern auch zu einer Senkung bei den beiden anderen Peaks führt.
+
+Eine interessante Beobachtung ist, dass die Ausrichtung der Eisenfolien zu einer anderen effektiven Dicke der Folien führen: So gibt Moessfit im Vergleich zur \SI{25}{\micro\meter}-Eisenfolie ohne Magnet für die \SI{25}{\micro\meter}-Eisenfolie mit Stabmagneten einen etwa 16,5\,\% kleineren und für die \SI{25}{\micro\meter}-Eisenfolie mit Ringmagneten einen etwa 8,5\,\% höheren Wert von \textit{ta} aus.
+
+Zu guter letzt wird die Auswirkung der Schwankung des Magnetfeldes beachtet. Dafür werden die \textit{sigma}-Werte verglichen: Diese sind zwischen den beiden nicht-magnetisierten Folien mit einer Abweichung der 4x\SI{3}{\micro\meter}-Eisenfolie um +3,7\,\% im Vergleich zur \SI{25}{\micro\meter}-Eisenfolie ohne Magnet nahezu gleich (da \textit{sigma} quadratisch eingeht, spielt das Vorzeichen keine Rolle), weichen aber stark ab, sobald die Folien magnetisiert werden. Die \SI{25}{\micro\meter}-Eisenfolie mit Stabmagneten erreicht einen Wert von +113,3\,\%, die \SI{25}{\micro\meter}-Eisenfolie mit Ringmagneten von -15,8\,\%. Damit schwankt das effektive Magnetfeld in der \SI{25}{\micro\meter}-Eisenfolie mit Stabmagneten mehr als doppelt so stark wie in der \SI{25}{\micro\meter}-Eisenfolie ohne Magnet, während die Schwankung bei der \SI{25}{\micro\meter}-Eisenfolie mit Ringmagneten geringer ausfällt. 
+
+Die Isomerieverschiebung hingegen ändert sich weder durch eine veränderte Dicke noch durch das Anlegen eines Magnetfeldes und schwankt zwischen -0,10914 und -0,11268, was einem Mittelwert von -0,11091 und einer Abweichung von diesem um $\pm$1,6\,\% entspricht. 
+
+\subsection{Anpassungen des Modells für Ferrocen}
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{0.5\textwidth}
+		\includegraphics[width=\textwidth]{MoessbauerFerrocen}
+	  \caption{Mößbauerspektrum}
+	  \label{fig:moessferrocen}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+	  \includegraphics[width=\textwidth]{WerteFerrocen}
+	  \caption{Gefittete Werte des Spektrums}
+	  \label{fig:werteferrocen}
+  \end{subfigure}
+	\caption{Gefittetes Mößbauerspektrum von Ferrocen}
+\end{figure}
+
+Für Ferrocen muss das Modell eine andere Anpassung erfahren: Bei einer Betrachtung der Messwerte wird deutlich, dass nur zwei Peaks zu sehen sind. Diese stimmen sehr gut mit den beiden Peaks in Bild \ref{fig:graphmoessbauer}(b) überein. Daher liegt der Gedanke nahe, dass hier das Magnetfeld irrelevant ist und dafür das elektrische Feld betrachtet werden muss. Es werden also folgende Anpassungen vorgenommen: B wird aus genanntem Grund auf null gesetzt. eta wird ebenfalls als null angenommen, da von einem symmetrischen Feld ausgegangen werden kann. Parallel zu den Anpassungen oben können auch theta und phi null gesetzt werden, und wie oben wird damit auch gamma irrelevant. Da weder die Probendicke noch die Ausrichtung der Ferrocen-Moleküle weitergehend untersucht werden sollen, können diese Änderungen als vollständig angenommen werden. Es werden also folgende Parameter verwendet: Vzz, CS, omega, I0, A0 und beta.
+
+\section{Fazit}
+
+
+
+%------------------------
+
+\begin{thebibliography}{9}
+
+\bibitem{skript}
+  https://tu-dresden.de/mn/physik/ifp/ressourcen/dateien/lehre/praktika/mbs?lang=de
+	16.11.2016
+	16:00 Uhr
+	
+\bibitem{basic}
+  https://de.wikipedia.org/wiki/M\%C3\%B6\%C3\%9Fbauerspektroskopie
+	16.11.2016
+	16:15 Uhr
+	
+\bibitem{hyperfein}
+  https://de.wikipedia.org/wiki/Hyperfeinstruktur
+	16.11.2016
+	16:15 Uhr
+	
+\bibitem{doppler}
+  https://de.wikipedia.org/wiki/Doppler-Effekt\#Doppler-Effekt\_ohne\_Medium
+	16.11.2016
+	17:50 Uhr
+	
+\bibitem{eisen}
+  https://de.wikipedia.org/wiki/Eisen
+	24.11.2016
+	17:50 Uhr
+
+\end{thebibliography}
+
+\end{document}
